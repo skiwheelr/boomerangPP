@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.paypal.*;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
 import com.paypal.android.sdk.payments.*;
 import com.paypal.android.sdk.*;
@@ -21,6 +20,11 @@ import java.math.*;
 import android.app.Activity;
 import org.json.JSONException;
 import android.util.Log;
+import android.widget.EditText;
+import android.widget.Button;
+import android.widget.Toast;
+import android.widget.Toast.*;
+import java.lang.String;
 
 
 
@@ -28,12 +32,17 @@ import android.util.Log;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    int amtSnd;
+
+    EditText amtusd;
+    Button buttonboom;
+
     //Paypal Single Payment
     private static PayPalConfiguration config = new PayPalConfiguration()
             // Start with mock environment.  When ready, switch to sandbox (ENVIRONMENT_SANDBOX)
             // or live (ENVIRONMENT_PRODUCTION)
             .environment(PayPalConfiguration.ENVIRONMENT_NO_NETWORK)
-            .clientId("AQv0wvVSqFZVtTFj7RoxyudFhAJzK_3q_RBxleqETX4w3hrUNxuFzBc9vlGEjgsgdpIzN1b27i-ZjXQ-");
+            .clientId("v0wvVSqFZVtTFj7RoxyudFhAJzK_3q_RBxleqETX4w3hrUNxuFzBc9vlGEjgsgdpIzN1b27i-ZjXQ-");
         //secret"EOSUSZFbd_17qop-rAo-21tn_erGPQMkmBKlJ4_LDiRyElnNpsj_TNTYLKg8z0-FFiG56JMhtSefCE-3"
 
 
@@ -73,6 +82,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -100,11 +111,24 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        amtusd = (EditText) findViewById(R.id.amtusd);
+        buttonboom = (Button) findViewById(R.id.buttonboom);
+        buttonboom.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View buttonboom) {
+                amtSnd = Integer.valueOf(amtusd.getText().toString());
+                String amtSndString = amtusd.getText().toString();
+                Toast.makeText(MainActivity.this,amtSndString,Toast.LENGTH_SHORT).show();
+                onBuyPressed();
+            }
+        });
     }
 
     //paypalIntent
 
-    public void onBuyPressed(View pressed, View amountBox) {
+    public void onBuyPressed() {
+        //View pressed
 
         // PAYMENT_INTENT_SALE will cause the payment to complete immediately.
         // Change PAYMENT_INTENT_SALE to
@@ -112,7 +136,7 @@ public class MainActivity extends AppCompatActivity
         //   - PAYMENT_INTENT_ORDER to create a payment for authorization and capture
         //     later via calls from your server.
 
-        PayPalPayment payment = new PayPalPayment(new BigDecimal(amountBox), "USD", "Transfer",
+        PayPalPayment payment = new PayPalPayment(new BigDecimal("1.50"), "USD", "Transfer",
                 PayPalPayment.PAYMENT_INTENT_SALE);
 
         Intent intent = new Intent(this, PaymentActivity.class);
